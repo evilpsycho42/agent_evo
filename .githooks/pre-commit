@@ -1,0 +1,44 @@
+#!/usr/bin/env sh
+set -eu
+
+if command -v gitleaks >/dev/null 2>&1; then
+  gitleaks protect --staged --redact
+  exit $?
+fi
+
+# Fallback: high-signal checks for common credential patterns in staged changes.
+# This is intentionally minimal; install gitleaks for broader coverage.
+
+tmp="$(mktemp -t gitleaks-precommit.XXXXXX)"
+trap 'rm -f "$tmp"' EXIT
+
+git diff --cached --no-color >"$tmp"
+
+if [ ! -s "$tmp" ]; then
+  exit 0
+fi
+
+fail() {
+  name="$1"
+  echo "pre-commit: possible secret detected in staged changes ($name)." >&2
+  echo "pre-commit: install gitleaks for better scanning (macOS: brew install gitleaks)." >&2
+  echo "pre-commit: inspect with: git diff --cached" >&2
+  exit 1
+}
+
+check() {
+  name="$1"
+  regex="$2"
+  if grep -E -q -- "$regex" "$tmp"; then
+    fail "$name"
+  fi
+}
+
+check "private key block" "-----BEGIN ([A-Z ]+ )?PRIVATE KEY-----"
+check "AWS access key id" "(AKIA|ASIA)[0-9A-Z]{16}"
+check "GitHub token" "(ghp_[A-Za-z0-9]{36}|github_pat_[A-Za-z0-9_]{20,})"
+check "Slack token" "xox[baprs]-"
+check "Google API key" "AIzaSy[0-9A-Za-z_-]{33}"
+check "OpenAI-style key" "sk-[A-Za-z0-9]{20,}"
+
+exit 0
