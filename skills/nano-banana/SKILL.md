@@ -1,6 +1,7 @@
 ---
-name: nano-banana-pro
-description: Generate/edit images with Nano Banana Pro (gemini-3-pro-image-preview) or Nano banana (gemini-2.5-flash-image-preview). Use for image create/modify requests incl. edits. Supports text-to-image + image-to-image; 1K/2K/4K; multiple aspect ratios; use --input-image.
+name: nano-banana
+description: Image generation and editing CLI using Google Gemini image models. Use when the user needs to create images from text prompts, edit or modify existing images, change image styles, or generate visual content. Triggers include requests to "generate an image", "create a picture", "draw something", "edit this image", "modify this photo", "make it look like", "change the style", "add/remove elements from image", or any task requiring AI image generation or manipulation. Supports multiple resolutions (1K/2K/4K), aspect ratios, and image-to-image editing via --input-image.
+allowed-tools: Bash(nano-banana:*)
 ---
 
 # Nano Banana Pro Image Generation & Editing
@@ -13,12 +14,12 @@ Run the script using relative path (from the skill directory):
 
 **Generate new image:**
 ```bash
-scripts/generate_image --prompt "your image description" --filename "output-name.png" [--resolution 1K|2K|4K] [--aspect RATIO]
+scripts/nano-banana --prompt "your image description" --filename "output-name.png" [--resolution 1K|2K|4K] [--aspect RATIO]
 ```
 
 **Edit existing image:**
 ```bash
-scripts/generate_image --prompt "editing instructions" --filename "output-name.png" --input-image "path/to/input.png" [--resolution 1K|2K|4K] [--aspect RATIO]
+scripts/nano-banana --prompt "editing instructions" --filename "output-name.png" --input-image "path/to/input.png" [--resolution 1K|2K|4K] [--aspect RATIO]
 ```
 
 **Important:** Always run from the user's current working directory so images are saved where the user is working, not in the skill directory.
@@ -28,11 +29,11 @@ scripts/generate_image --prompt "editing instructions" --filename "output-name.p
 Goal: fast iteration without burning time on 4K until the prompt is correct.
 
 - Draft (1K): quick feedback loop
-  - `scripts/generate_image --prompt "<draft prompt>" --filename "yyyy-mm-dd-hh-mm-ss-draft.png" --resolution 1K`
+  - `scripts/nano-banana --prompt "<draft prompt>" --filename "yyyy-mm-dd-hh-mm-ss-draft.png" --resolution 1K`
 - Iterate: adjust prompt in small diffs; keep filename new per run
   - If editing: keep the same `--input-image` for every iteration until you’re happy.
 - Final (4K): only when prompt is locked
-  - `scripts/generate_image --prompt "<final prompt>" --filename "yyyy-mm-dd-hh-mm-ss-final.png" --resolution 4K`
+  - `scripts/nano-banana --prompt "<final prompt>" --filename "yyyy-mm-dd-hh-mm-ss-final.png" --resolution 4K`
 
 ## Resolution Options
 
@@ -128,10 +129,10 @@ Use templates when the user is vague or when edits must be precise.
 
 **Generate new image:**
 ```bash
-scripts/generate_image --prompt "A serene Japanese garden with cherry blossoms" --filename "2025-11-23-14-23-05-japanese-garden.png" --resolution 4K
+scripts/nano-banana --prompt "A serene Japanese garden with cherry blossoms" --filename "2025-11-23-14-23-05-japanese-garden.png" --resolution 4K
 ```
 
 **Edit existing image:**
 ```bash
-scripts/generate_image --prompt "make the sky more dramatic with storm clouds" --filename "2025-11-23-14-25-30-dramatic-sky.png" --input-image "original-photo.jpg" --resolution 2K
+scripts/nano-banana --prompt "make the sky more dramatic with storm clouds" --filename "2025-11-23-14-25-30-dramatic-sky.png" --input-image "original-photo.jpg" --resolution 2K
 ```

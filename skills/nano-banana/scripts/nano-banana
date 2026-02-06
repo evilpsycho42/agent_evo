@@ -10,7 +10,7 @@
 Generate images using Google's Nano Banana Pro (Gemini image) API.
 
 Usage:
-    generate_image --prompt "your image description" --filename "output.png" [--resolution 1K|2K|4K] [--aspect RATIO] [--model MODEL]
+    nano-banana --prompt "your image description" --filename "output.png" [--resolution 1K|2K|4K] [--aspect RATIO] [--model MODEL]
 
 Environment variables:
     GEMINI_API_KEY   - Required. Your Gemini API key.
